@@ -51,4 +51,26 @@ export async function createBlog(payload){ return request('/api/blogs', { method
 export async function updateBlog(id, payload){ return request(`/api/blogs/${id}`, { method: 'PUT', body: JSON.stringify(payload) }); }
 export async function deleteBlog(id){ return request(`/api/blogs/${id}`, { method: 'DELETE' }); }
 
-export default { fetchBooks, fetchAuthor, saveAuthor, toggleFeatured, adminLogin, createOrder, fetchOrders, updateOrderStatus, deleteOrder, fetchOrderQueue, flushOrderQueue, fetchBlogs, fetchBlog, createBlog, updateBlog, deleteBlog };
+export default {
+  fetchBooks,
+  fetchAuthor,
+  saveAuthor,
+  toggleFeatured,
+  adminLogin,
+  createOrder,
+  fetchOrders,
+  updateOrderStatus,
+  deleteOrder,
+  fetchOrderQueue,
+  flushOrderQueue,
+  // Books
+  createBook,
+  updateBook,
+  deleteBook,
+  // Blogs
+  fetchBlogs,
+  fetchBlog,
+  createBlog,
+  updateBlog,
+  deleteBlog
+};
