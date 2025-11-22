@@ -1,5 +1,6 @@
-// Lightweight API helper for the frontend to talk to the local Express API.
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+// Lightweight API helper for the frontend to talk to the Express API.
+// Default to the Render-hosted API so the frontend fetches data directly from the Render server.
+export const API_BASE = process.env.REACT_APP_API_URL || 'https://premdaportfolio.onrender.com';
 
 async function request(path, opts = {}){
   // include Authorization Bearer token from localStorage when present

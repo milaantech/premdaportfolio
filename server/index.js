@@ -13,7 +13,29 @@ const uploadsRouter = require('./routes/uploads');
 const adminRouter = require('./routes/admin');
 
 const app = express();
-app.use(cors());
+
+// Configure CORS so your Vercel frontend can call this Render-hosted API.
+// Set FRONTEND_URL in your Render environment to your Vercel app URL (e.g. https://your-app.vercel.app)
+// We always allow the Render server origin itself and localhost for local dev.
+const FRONTEND_URL = process.env.FRONTEND_URL || ';https://premdaportfolio.onrender.com'
+const ALLOWED_ORIGINS = [
+  FRONTEND_URL,
+  'https://premdaportfolio.onrender.com', // Render service URL (backend)
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+].filter(Boolean);
+console.log('[cors] Allowed origins:', ALLOWED_ORIGINS.join(', ') || 'none');
+
+app.use(cors({
+  origin: function(origin, callback){
+    // allow requests with no origin (mobile apps, curl, server-to-server)
+    if(!origin) return callback(null, true);
+    if(ALLOWED_ORIGINS.indexOf(origin) !== -1) return callback(null, true);
+    console.warn('[cors] Rejected origin:', origin);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 const PORT = process.env.PORT || 4000;

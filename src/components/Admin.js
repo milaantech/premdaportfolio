@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../lib/api';
+import api, { API_BASE } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import OrdersAdmin from './OrdersAdmin';
@@ -123,10 +123,8 @@ export default function Admin({ books, setBooks, showAlert, logoutAdmin, author,
   try{ token = localStorage.getItem('pt_admin_token'); if(token) token = JSON.parse(token); }catch(e){ /* ignore */ }
   const headers = {};
   if(token) headers['Authorization'] = `Bearer ${token}`;
-        const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-
-        // try server delete
-        const res = await fetch(`${API_BASE}/api/books/${id}`, { method: 'DELETE', headers });
+  // try server delete
+  const res = await fetch(`${API_BASE}/api/books/${id}`, { method: 'DELETE', headers });
         if(!res.ok){
           const text = await res.text().catch(()=>res.statusText);
           throw new Error(text || 'Delete failed');
@@ -319,8 +317,7 @@ export default function Admin({ books, setBooks, showAlert, logoutAdmin, author,
 
     // upload to server endpoint /api/uploads
     (async () => {
-      const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-      const fd = new FormData();
+  const fd = new FormData();
       fd.append('file', f);
       try{
         // include Authorization header if available

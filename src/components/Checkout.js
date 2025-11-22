@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useToast } from './ToastProvider';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE } from '../lib/api';
 
 function formatCardNumber(v){
   return v.replace(/\D/g,'').slice(0,16).replace(/(\d{4})(?=\d)/g,'$1 ').trim();
@@ -49,7 +50,7 @@ export default function Checkout({ cart, setCart, showAlert }){
       try{
         if(form.payment === 'card'){
           // Try server-side Stripe flow
-          const resp = await fetch((process.env.REACT_APP_API_URL || 'http://localhost:4000') + '/api/payments/create-checkout-session', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: cart, successUrl: window.location.origin + '/order-success/{CHECKOUT_SESSION_ID}', cancelUrl: window.location.origin + '/checkout' }) });
+          const resp = await fetch(API_BASE + '/api/payments/create-checkout-session', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: cart, successUrl: window.location.origin + '/order-success/{CHECKOUT_SESSION_ID}', cancelUrl: window.location.origin + '/checkout' }) });
           const data = await resp.json();
           if(data && data.url){
             // redirect to Stripe hosted checkout
@@ -66,7 +67,7 @@ export default function Checkout({ cart, setCart, showAlert }){
           amount: total
         };
         // use api helper (attaches auth header if present)
-        const orderJson = await (await fetch((process.env.REACT_APP_API_URL || 'http://localhost:4000') + '/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json();
+  const orderJson = await (await fetch(API_BASE + '/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json();
         // verify server actually created the order
         if(!orderJson || (!orderJson.id && !orderJson._id)){
           throw new Error(JSON.stringify(orderJson || 'No response'));
