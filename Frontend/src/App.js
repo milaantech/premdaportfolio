@@ -127,7 +127,7 @@ function AdminLogin({ loginAdmin, showAlert, isAdmin }) {
           />
           <input 
             type="password" 
-            placeholder="Password (secret123)" 
+            placeholder="Password (example)" 
             value={password} 
             onChange={e => setPassword(e.target.value)}
             className="p-3 border rounded-lg w-full dark:bg-slate-900 focus:ring-amber-500 focus:border-amber-500" 
