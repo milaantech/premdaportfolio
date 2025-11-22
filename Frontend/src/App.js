@@ -115,7 +115,7 @@ function AdminLogin({ loginAdmin, showAlert, isAdmin }) {
     >
       <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700">
         <h2 className="font-serif text-3xl mb-4 text-amber-600 dark:text-amber-500 text-center">Admin Login</h2>
-        <p className="text-center text-sm text-slate-500 mb-6">Use credentials: admin / secret123</p>
+        <p className="text-center text-sm text-slate-500 mb-6">Use credentials: </p>
         <form onSubmit={handleSubmit} className="grid gap-4">
           <input 
             type="text" 
