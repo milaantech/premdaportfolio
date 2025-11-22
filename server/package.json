@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "dedupe:slugs": "node scripts/dedupe-slugs.js"
+    "dedupe:slugs": "node scripts/dedupe-slugs.js",
+    "postinstall": "npm rebuild bcrypt --build-from-source"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
