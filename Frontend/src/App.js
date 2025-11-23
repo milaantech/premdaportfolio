@@ -31,6 +31,7 @@ import CheckoutComponent from './components/Checkout';
 import OrderSuccess from './components/OrderSuccess';
 import OrdersAdmin from './components/OrdersAdmin';
 import api from './lib/api';
+import Loader from './components/Loader';
 import PublishersTechPartnersSection from './components/PublishersTechPartnersSection';
 import TrustedSupportersSection from './components/TrustedSupportersSection';
 import MoreAuthorsSection from './components/MoreAuthorsSection';
@@ -156,6 +157,7 @@ export default function App(){
   const [books, setBooks] = useState([]);
   const [author, setAuthor] = useState(null);
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [cart, setCart] = useLocalState('pt_cart', []);
   const [modal, setModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
   const [isAdmin, setIsAdmin] = useLocalState('pt_is_admin', false);
@@ -234,27 +236,43 @@ export default function App(){
   useEffect(() => {
     let mounted = true;
     async function load() {
+      setLoading(true);
       // Remove any previously stored local/sample data that can override backend results.
       try{
         localStorage.removeItem('pt_books');
         localStorage.removeItem('pt_author');
         localStorage.removeItem('pt_blogs');
       }catch(e){}
+
+      // Run the three fetches in parallel and settle them together.
+      const tasks = await Promise.allSettled([
+        api.fetchBooks(),
+        api.fetchAuthor(),
+        api.fetchBlogs()
+      ]);
+
+      // books
       try{
-        const remoteBooks = await api.fetchBooks();
-        // If the backend responded with an array (even empty), prefer that over local sample data.
-        if(mounted && Array.isArray(remoteBooks)) {
-          setBooks(remoteBooks.map(b => ({ ...b, id: b._id || b.id }))); // normalize id
+        const res = tasks[0];
+        if(mounted && res.status === 'fulfilled' && Array.isArray(res.value)){
+          setBooks(res.value.map(b => ({ ...b, id: b._id || b.id })));
         }
-      }catch(err){ /* ignore, backend not available */ }
+      }catch(e){}
+      // author
       try{
-        const remoteAuthor = await api.fetchAuthor();
-        if(mounted && remoteAuthor) setAuthor(remoteAuthor);
-      }catch(err){ /* ignore */ }
+        const res = tasks[1];
+        if(mounted && res.status === 'fulfilled' && res.value) setAuthor(res.value);
+      }catch(e){}
+      // blogs
       try{
-        const remoteBlogs = await api.fetchBlogs();
-        if(mounted && Array.isArray(remoteBlogs)) setBlogs(remoteBlogs.map(b => ({ ...b, id: b._id || b.id })));
-      }catch(err){ /* ignore */ }
+        const res = tasks[2];
+        if(mounted && res.status === 'fulfilled' && Array.isArray(res.value)){
+          setBlogs(res.value.map(b => ({ ...b, id: b._id || b.id })));
+        }
+      }catch(e){}
+
+      // done
+      if(mounted) setLoading(false);
     }
     load();
     // Listen for updates coming from Admin panel and reload blogs
@@ -271,6 +289,7 @@ export default function App(){
     <Router>
       <ToastProvider>
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-[Inter]">
+  {loading && <Loader />}
   {/* Prefer a book marked `featured`; fallback to first book */}
   <HeaderComponent author={author} isAdmin={isAdmin} featuredBook={books && books.length ? (books.find(b => b.featured) || books[0]) : null} />
 
