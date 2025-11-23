@@ -12,18 +12,6 @@ export const SAMPLE_BOOKS = [
     isbn: '978-1-23456-789-7',
     pubDate: '2023-06-12'
   },
-  {
-    id: 'b2',
-    title: 'Poems in Motion',
-    subtitle: 'Verses for the everyday',
-    price: 199,
-    images: ['https://placehold.co/800x1200?text=Poems+in+Motion'],
-    description: 'A slim volume of observational poetry.',
-    genre: 'Poetry',
-    pages: 120,
-    isbn: '978-1-23456-789-8',
-    pubDate: '2021-02-01'
-  }
 ];
 
 export const SAMPLE_AUTHOR = {

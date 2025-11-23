@@ -7,8 +7,6 @@ import HeaderComponent from './components/Header';
 import ToastProvider from './components/ToastProvider';
 import useLocalState from './hooks/useLocalState';
 import {
-  SAMPLE_BOOKS,
-  SAMPLE_AUTHOR,
   SAMPLE_PUBLISHERS,
   SAMPLE_TECH_PARTNERS,
   SAMPLE_SUPPORTERS,
@@ -153,9 +151,11 @@ function AdminLogin({ loginAdmin, showAlert, isAdmin }) {
 // App
 // -----------------------
 export default function App(){
-  const [books, setBooks] = useLocalState('pt_books', SAMPLE_BOOKS);
-  const [author, setAuthor] = useLocalState('pt_author', SAMPLE_AUTHOR);
-  const [blogs, setBlogs] = useLocalState('pt_blogs', []);
+  // Use in-memory state for primary content so we always prefer backend data
+  // and do not fall back to local sample data stored in localStorage.
+  const [books, setBooks] = useState([]);
+  const [author, setAuthor] = useState(null);
+  const [blogs, setBlogs] = useState([]);
   const [cart, setCart] = useLocalState('pt_cart', []);
   const [modal, setModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
   const [isAdmin, setIsAdmin] = useLocalState('pt_is_admin', false);
@@ -234,6 +234,12 @@ export default function App(){
   useEffect(() => {
     let mounted = true;
     async function load() {
+      // Remove any previously stored local/sample data that can override backend results.
+      try{
+        localStorage.removeItem('pt_books');
+        localStorage.removeItem('pt_author');
+        localStorage.removeItem('pt_blogs');
+      }catch(e){}
       try{
         const remoteBooks = await api.fetchBooks();
         // If the backend responded with an array (even empty), prefer that over local sample data.
