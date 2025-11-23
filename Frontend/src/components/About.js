@@ -2,7 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import BookCard from './BookCard';
 
-export default function About({ author = {}, books = [] }){
+export default function About(props){
+  // Coerce explicit null to empty object so `author.*` reads are safe
+  const author = (props && props.author) || {};
+  const books = (props && props.books) || [];
   const stats = author.stats || [];
   const suggestedBooks = (Array.isArray(books) ? books : []).filter(b => b).slice(0, 4);
   return (

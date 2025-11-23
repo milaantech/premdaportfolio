@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Header({ author, isAdmin, featuredBook }){
+export default function Header(props){
+  // If parent passes `author` as null (explicit), the destructuring default won't apply.
+  // Coerce null -> {} here so downstream property accesses are safe.
+  const author = (props && props.author) || {};
+  const isAdmin = props && props.isAdmin;
+  const featuredBook = props && props.featuredBook;
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 

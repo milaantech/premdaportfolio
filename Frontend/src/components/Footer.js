@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
-export default function Footer({ author = {} }){
+export default function Footer(props){
+  // Ensure author is an object even if parent passes null
+  const author = (props && props.author) || {};
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
