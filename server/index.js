@@ -22,6 +22,7 @@ const ALLOWED_ORIGINS = [
   FRONTEND_URL,
   'https://premdaportfolio.onrender.com', // Render service URL (backend)
   'https://premdaportfolio-dqd4.vercel.app', // your Vercel frontend
+  'https://priyamvadaworld.in', // custom domain
   'http://localhost:3000',
   'http://127.0.0.1:3000'
 ].filter(Boolean);
